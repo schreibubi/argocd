@@ -14,3 +14,6 @@ spec:
   destination:
     server: {{ .Values.spec.destination.server }}
     namespace: longhorn-system
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
