@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: https://charts.longhorn.io
     chart: longhorn
-    targetRevision: HEAD
+    targetRevision: 1.5.1
   destination:
     server: {{ .Values.spec.destination.server }}
     namespace: longhorn-system
