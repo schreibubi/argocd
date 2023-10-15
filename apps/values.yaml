@@ -4,3 +4,7 @@ spec:
   source:
     repoURL: git@github.com:schreibubi/argocd.git
     targetRevision: master
+
+applications:
+  - name: rancher
+  - name: longhorn
