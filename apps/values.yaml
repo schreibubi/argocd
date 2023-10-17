@@ -8,3 +8,4 @@ spec:
 applications:
   - name: rancher
   - name: longhorn
+  - name: ingress-nginx
