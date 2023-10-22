@@ -30,7 +30,6 @@ spec:
           enabled: true
           primary:
             persistence: true
-            storageClass: longhorn
         persistence:
           enabled: true
           storageClass: longhorn
