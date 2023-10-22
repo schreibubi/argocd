@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: longhorn
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL:  https://nextcloud.github.io/helm/
+    chart: nextcloud
+    targetRevision: 4.3.5
+    helm:
+      valuesObject:
+        ingress:
+          enabled: true
+        nextcloud:
+          host: k8s.schreibubi.de
+        redis:
+          enabled: true
+        cronjob:
+          enabled: true
+        externalDatabase:
+          enabled: true
+          type: postgresql
+        postgresql:
+          enabled: true
+        persistence:
+          enabled: true
+          storageClass: longhorn
+          nextcloudData:
+            enabled: true
+            storageClass: longhorn
+  destination:
+    server: {{ .Values.spec.destination.server }}
+    namespace: nextcloud
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
