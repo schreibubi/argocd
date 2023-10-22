@@ -28,6 +28,9 @@ spec:
           type: postgresql
         postgresql:
           enabled: true
+          primary:
+            persistence: true
+            storageClass: longhorn
         persistence:
           enabled: true
           storageClass: longhorn
