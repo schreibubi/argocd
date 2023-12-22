@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: elk
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://helm.elastic.co
+    chart: eck-stack
+    targetRevision: 0.8.0
+    helm:
+      valuesObject:
+        eck-logstash:
+          enabled: true
+        eck-agent:
+          enabled: true
+  destination:
+    server: {{ .Values.spec.destination.server }}
+    namespace: elastic-stack
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true

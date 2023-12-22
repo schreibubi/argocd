@@ -10,3 +10,6 @@ applications:
   - name: longhorn
   - name: ingress-nginx
   - name: nextcloud
+  - name: eck-operator
+  - name: eck-stack
+
