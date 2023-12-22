@@ -12,11 +12,11 @@ spec:
     chart: eck-stack
     targetRevision: 0.8.0
     helm:
-      valuesObject:
-        eck-logstash:
-          enabled: true
-        eck-agent:
-          enabled: true
+      parameters:
+      - name: "eck-logstash.enabled"
+        value: true
+      - name: "eck-agent.enabled"
+        value: true
   destination:
     server: {{ .Values.spec.destination.server }}
     namespace: elastic-stack
