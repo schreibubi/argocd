@@ -11,6 +11,10 @@ spec:
     repoURL: https://charts.longhorn.io
     chart: longhorn
     targetRevision: 1.5.3
+    helm:
+      valuesObject:
+        helmPreUpgradeCheckerJob:
+          enabled: false
   destination:
     server: {{ .Values.spec.destination.server }}
     namespace: longhorn-system
