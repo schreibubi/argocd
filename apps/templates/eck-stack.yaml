@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: eck-stack-new
+  name: eck-stack
   namespace: argocd
   finalizers:
   - resources-finalizer.argocd.argoproj.io
@@ -14,10 +14,6 @@ spec:
     helm:
       parameters:
       - name: "eck-logstash.enabled"
-        value: "true"
-      - name: "eck-agent.enabled"
-        value: "true"
-      - name: "eck-beats.enabled"
         value: "true"
   destination:
     server: {{ .Values.spec.destination.server }}
