@@ -11,5 +11,5 @@ applications:
   - name: ingress-nginx
   - name: nextcloud
   - name: eck-operator
-  - name: eck-stack
+  - name: eck-stack-new
 
