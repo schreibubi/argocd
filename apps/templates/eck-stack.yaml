@@ -44,7 +44,6 @@ spec:
               - add_host_metadata: {}
               - add_cloud_metadata: {}
               output.logstash:
-                # This needs to be {{logstash-name}}-ls-beats:5044
                 hosts: ["logstash-ls-beats-ls-beats:5044"]
             deployment:
               podTemplate:
@@ -75,12 +74,8 @@ spec:
         eck-logstash:
           annotations:
             eck.k8s.elastic.co/license: basic
-          # This is required to be able to set the logstash
-          # output of beats in a consistent manner.
           fullnameOverride: "logstash-ls-beats"
           elasticsearchRefs:
-            # This clusterName is required to match the environment variables
-            # used in the below config.string output section.
             - clusterName: eck
               name: elasticsearch
           pipelines:
