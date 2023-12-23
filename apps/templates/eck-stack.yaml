@@ -17,14 +17,19 @@ spec:
         value: "true"
       valuesObject:
         eck-elasticsearch:
-            annotations:
-                eck.k8s.elastic.co/license: basic
+          annotations:
+            eck.k8s.elastic.co/license: basic
         eck-kibana:
-            annotations:
-                eck.k8s.elastic.co/license: basic
+          annotations:
+            eck.k8s.elastic.co/license: basic
+          spec:
+            http:
+              tls:
+                selfSignedCertificate:
+                  disabled: true
         eck-logstash:
-            annotations:
-                eck.k8s.elastic.co/license: basic        
+          annotations:
+            eck.k8s.elastic.co/license: basic
   destination:
     server: {{ .Values.spec.destination.server }}
     namespace: elastic-stack
@@ -48,6 +53,6 @@ spec:
           service:
             name: eck-stack-eck-kibana-kb-http
             port:
-              number: 80
+              number: 5601
         path: /
         pathType: ImplementationSpecific
