@@ -15,6 +15,16 @@ spec:
       parameters:
       - name: "eck-logstash.enabled"
         value: "true"
+      valuesObject:
+        eck-elasticsearch:
+            annotations:
+                eck.k8s.elastic.co/license: basic
+        eck-kibana:
+            annotations:
+                eck.k8s.elastic.co/license: basic
+        eck-logstash:
+            annotations:
+                eck.k8s.elastic.co/license: basic        
   destination:
     server: {{ .Values.spec.destination.server }}
     namespace: elastic-stack
