@@ -17,8 +17,6 @@ spec:
         value: "true"
       - name: "eck-agent.enabled"
         value: "true"
-      - name: "eck-beats.enabled"
-        value: "true"
       valuesObject:
         eck-elasticsearch:
           annotations:
@@ -35,9 +33,6 @@ spec:
           annotations:
             eck.k8s.elastic.co/license: basic
         eck-agent:
-          annotations:
-            eck.k8s.elastic.co/license: basic
-        eck-beats:
           annotations:
             eck.k8s.elastic.co/license: basic
   destination:
