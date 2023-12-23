@@ -145,7 +145,7 @@ kind: Ingress
 metadata:
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
-  name: kibana-ingress
+  name: elasticsearch-local-ingress
   namespace: elastic-stack
 spec:
   rules:
