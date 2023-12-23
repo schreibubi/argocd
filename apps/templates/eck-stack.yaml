@@ -15,8 +15,6 @@ spec:
       parameters:
       - name: "eck-logstash.enabled"
         value: "true"
-      - name: "eck-agent.enabled"
-        value: "true"
       valuesObject:
         eck-elasticsearch:
           annotations:
@@ -30,9 +28,6 @@ spec:
                 selfSignedCertificate:
                   disabled: true
         eck-logstash:
-          annotations:
-            eck.k8s.elastic.co/license: basic
-        eck-agent:
           annotations:
             eck.k8s.elastic.co/license: basic
   destination:
