@@ -139,3 +139,23 @@ spec:
               number: 5601
         path: /
         pathType: ImplementationSpecific
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+  name: kibana-ingress
+  namespace: elastic-stack
+spec:
+  rules:
+  - host: node1.schreibubi.home.arpa
+    http:
+      paths:
+      - backend:
+          service:
+            name: elasticsearch-es-http
+            port:
+              number: 9200
+        path: /
+        pathType: ImplementationSpecific
