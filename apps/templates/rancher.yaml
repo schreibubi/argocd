@@ -8,9 +8,15 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: {{ .Values.spec.source.repoURL }}
-    targetRevision: {{ .Values.spec.source.targetRevision }}
-    path: rancher
+    repoURL: https://releases.rancher.com/server-charts/stable
+    targetRevision: 2.7.9
+    helm:
+      valuesObject:
+        ingress:
+          enabled: true
+          host: rancher.schreibubi.de
+          annotations:
+            nginx.ingress.kubernetes.io/ssl-redirect: "false"
   destination:
     server: {{ .Values.spec.destination.server }}
     namespace: cattle-system
