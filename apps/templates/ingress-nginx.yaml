@@ -19,12 +19,13 @@ spec:
             type: RollingUpdate
             rollingUpdate:
               maxUnavailable: 1
-          service:
-            type: NodePort
           publishService:
             enabled: false
           config:
             use-forwarded-headers: "true"
+          service:
+            annotations:
+              metallb.universe.tf/loadBalancerIPs: 192.168.120.120
   destination:
     server: {{ .Values.spec.destination.server }}
     namespace: ingress-nginx
