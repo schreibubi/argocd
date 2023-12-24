@@ -18,6 +18,7 @@ spec:
           host: rancher.schreibubi.de
           annotations:
             nginx.ingress.kubernetes.io/ssl-redirect: "false"
+        tls: "external"
   destination:
     server: {{ .Values.spec.destination.server }}
     namespace: cattle-system
