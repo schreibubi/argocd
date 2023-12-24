@@ -19,6 +19,55 @@ spec:
   destination:
     server: {{ .Values.spec.destination.server }}
     namespace: metallb-system
+  ignoreDifferences:
+    - group: "apiextensions.k8s.io"
+      kind: CustomResourceDefinition
+      name: bgppeers.metallb.io
+      jsonPointers:
+      - /spec/conversion/webhook/clientConfig/caBundle
+    - group: "apiextensions.k8s.io"
+      kind: CustomResourceDefinition
+      name: addresspools.metallb.io
+      jsonPointers:
+      - /spec/conversion/webhook/clientConfig/caBundle
   syncPolicy:
-    syncOptions:
+      syncOptions:
+      - RespectIgnoreDifferences=true
       - CreateNamespace=true
+---
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: first-pool
+  namespace: metallb-system
+spec:
+  avoidBuggyIPs: true
+  addresses:
+  - 192.168.120.0/24
+  - fdf7:aaaa:bb99:0000::/64
+---
+apiVersion: metallb.io/v1beta1
+kind: BFDProfile
+metadata:
+  name: testbfdprofile
+  namespace: metallb-system
+spec:
+  receiveInterval: 380
+  transmitInterval: 270
+---
+apiVersion: metallb.io/v1beta1
+kind: BGPAdvertisement
+metadata:
+  name: example
+  namespace: metallb-system
+---
+apiVersion: metallb.io/v1beta2
+kind: BGPPeer
+metadata:
+  name: sample
+  namespace: metallb-system
+spec:
+  myASN: 64500
+  peerASN: 64501
+  peerAddress: 192.168.101.1
+  bfdProfile: testbfdprofile
