@@ -15,29 +15,14 @@ spec:
       valuesObject:
         helmPreUpgradeCheckerJob:
           enabled: false
+	ingress:
+	  enabled: true
+	  host: longhorn.schreibubi.de
+	  annotations:
+	    nginx.ingress.kubernetes.io/ssl-redirect: "false"
   destination:
     server: {{ .Values.spec.destination.server }}
     namespace: longhorn-system
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  annotations:
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
-  name: longhorn-ingress
-  namespace: longhorn-system
-spec:
-  rules:
-  - host: longhorn.schreibubi.de
-    http:
-      paths:
-      - backend:
-          service:
-            name: longhorn-frontend
-            port:
-              number: 80
-        path: /
-        pathType: ImplementationSpecific
