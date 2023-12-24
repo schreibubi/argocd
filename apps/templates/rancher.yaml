@@ -13,10 +13,10 @@ spec:
     targetRevision: 2.8.0
     helm:
       valuesObject:
+        hostname: rancher.schreibubi.de
         ingress:
           enabled: true
-          host: rancher.schreibubi.de
-          annotations:
+          extraAnnotations:
             nginx.ingress.kubernetes.io/ssl-redirect: "false"
         tls: "external"
   destination:
