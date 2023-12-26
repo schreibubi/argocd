@@ -5,17 +5,22 @@ metadata:
   namespace: argocd
   finalizers:
   - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   project: default
-  source:
-    repoURL: https://metallb.github.io/metallb
-    chart: metallb
-    targetRevision: 0.13.12
-    helm:
-      valuesObject:
-        speaker:
-          frr:
-            enabled: true
+  sources:
+    - repoURL: https://metallb.github.io/metallb
+      chart: metallb
+      targetRevision: 0.13.12
+      helm:
+        valuesObject:
+          speaker:
+            frr:
+              enabled: true
+    - repoURL: {{ .Values.spec.source.repoURL }}
+      targetRevision: {{ .Values.spec.source.targetRevision }}
+      path: config/metallb
   destination:
     server: {{ .Values.spec.destination.server }}
     namespace: metallb-system
@@ -34,40 +39,3 @@ spec:
       syncOptions:
       - RespectIgnoreDifferences=true
       - CreateNamespace=true
----
-apiVersion: metallb.io/v1beta1
-kind: IPAddressPool
-metadata:
-  name: first-pool
-  namespace: metallb-system
-spec:
-  avoidBuggyIPs: true
-  addresses:
-  - 192.168.120.0/24
-  - fdf7:aaaa:bb99:0000::/64
----
-apiVersion: metallb.io/v1beta1
-kind: BFDProfile
-metadata:
-  name: testbfdprofile
-  namespace: metallb-system
-spec:
-  receiveInterval: 380
-  transmitInterval: 270
----
-apiVersion: metallb.io/v1beta1
-kind: BGPAdvertisement
-metadata:
-  name: example
-  namespace: metallb-system
----
-apiVersion: metallb.io/v1beta2
-kind: BGPPeer
-metadata:
-  name: sample
-  namespace: metallb-system
-spec:
-  myASN: 64500
-  peerASN: 64501
-  peerAddress: 192.168.101.1
-  bfdProfile: testbfdprofile
