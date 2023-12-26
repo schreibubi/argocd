@@ -25,7 +25,7 @@ spec:
             use-forwarded-headers: "true"
           service:
             annotations:
-              metallb.universe.tf/loadBalancerIPs: 192.168.120.120, fdf7:aaaa:bb99::1111
+              metallb.universe.tf/loadBalancerIPs: 192.168.120.120
   destination:
     server: {{ .Values.spec.destination.server }}
     namespace: ingress-nginx
