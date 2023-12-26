@@ -5,137 +5,122 @@ metadata:
   namespace: argocd
   finalizers:
   - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   project: default
-  source:
-    repoURL: https://helm.elastic.co
-    chart: eck-stack
-    targetRevision: 0.8.0
-    helm:
-      parameters:
-      - name: "eck-logstash.enabled"
-        value: "true"
-      - name: "eck-beats.enabled"
-        value: "true"
-      valuesObject:
-        eck-elasticsearch:
-          annotations:
-            eck.k8s.elastic.co/license: basic
-        eck-kibana:
-          annotations:
-            eck.k8s.elastic.co/license: basic
-          spec:
-            http:
-              tls:
-                selfSignedCertificate:
-                  disabled: true
-        eck-beats:
-          annotations:
-            eck.k8s.elastic.co/license: basic
-          spec:
-            type: filebeat
-            daemonSet: null
-            config:
-              filebeat.inputs:
-              - type: log
-                paths:
-                  - /data/logstash-tutorial.log
-              processors:
-              - add_host_metadata: {}
-              - add_cloud_metadata: {}
-              output.logstash:
-                hosts: ["logstash-ls-beats-ls-beats:5044"]
-            deployment:
-              podTemplate:
-                spec:
-                  automountServiceAccountToken: true
-                  initContainers:
-                    - name: download-tutorial
-                      image: curlimages/curl
-                      command: ["/bin/sh"]
-                      args: ["-c", "curl -L https://download.elastic.co/demos/logstash/gettingstarted/logstash-tutorial.log.gz | gunzip -c > /data/logstash-tutorial.log"]
-                      volumeMounts:
-                        - name: data
-                          mountPath: /data
-                  containers:
-                    - name: filebeat
-                      securityContext:
-                        runAsUser: 1000
-                      volumeMounts:
-                        - name: data
-                          mountPath: /data
-                        - name: beat-data
-                          mountPath: /usr/share/filebeat/data
-                  volumes:
-                    - name: data
-                      emptydir: {}
-                    - name: beat-data
-                      emptydir: {}
-        eck-logstash:
-          annotations:
-            eck.k8s.elastic.co/license: basic
-          fullnameOverride: "logstash-ls-beats"
-          elasticsearchRefs:
-            - clusterName: eck
-              name: elasticsearch
-          pipelines:
-            - pipeline.id: main
-              config.string: |
-                input {
-                  beats {
-                    port => 5044
+  sources:
+    - repoURL: https://helm.elastic.co
+      chart: eck-stack
+      targetRevision: 0.8.0
+      helm:
+        parameters:
+        - name: "eck-logstash.enabled"
+          value: "true"
+        - name: "eck-beats.enabled"
+          value: "true"
+        valuesObject:
+          eck-elasticsearch:
+            annotations:
+              eck.k8s.elastic.co/license: basic
+          eck-kibana:
+            annotations:
+              eck.k8s.elastic.co/license: basic
+            spec:
+              http:
+                tls:
+                  selfSignedCertificate:
+                    disabled: true
+          eck-beats:
+            annotations:
+              eck.k8s.elastic.co/license: basic
+            spec:
+              type: filebeat
+              daemonSet: null
+              config:
+                filebeat.inputs:
+                - type: log
+                  paths:
+                    - /data/logstash-tutorial.log
+                processors:
+                - add_host_metadata: {}
+                - add_cloud_metadata: {}
+                output.logstash:
+                  hosts: ["logstash-ls-beats-ls-beats:5044"]
+              deployment:
+                podTemplate:
+                  spec:
+                    automountServiceAccountToken: true
+                    initContainers:
+                      - name: download-tutorial
+                        image: curlimages/curl
+                        command: ["/bin/sh"]
+                        args: ["-c", "curl -L https://download.elastic.co/demos/logstash/gettingstarted/logstash-tutorial.log.gz | gunzip -c > /data/logstash-tutorial.log"]
+                        volumeMounts:
+                          - name: data
+                            mountPath: /data
+                    containers:
+                      - name: filebeat
+                        securityContext:
+                          runAsUser: 1000
+                        volumeMounts:
+                          - name: data
+                            mountPath: /data
+                          - name: beat-data
+                            mountPath: /usr/share/filebeat/data
+                    volumes:
+                      - name: data
+                        emptydir: {}
+                      - name: beat-data
+                        emptydir: {}
+          eck-logstash:
+            annotations:
+              eck.k8s.elastic.co/license: basic
+            fullnameOverride: "logstash-ls-beats"
+            elasticsearchRefs:
+              - clusterName: eck
+                name: elasticsearch
+            pipelines:
+              - pipeline.id: main
+                config.string: |
+                  input {
+                    beats {
+                      port => 5044
+                    }
                   }
-                }
-                filter {
-                  grok {
-                    match => { "message" => "%{HTTPD_COMMONLOG}"}
+                  filter {
+                    grok {
+                      match => { "message" => "%{HTTPD_COMMONLOG}"}
+                    }
+                    geoip {
+                      source => "[source][address]"
+                      target => "[source]"
+                    }
                   }
-                  geoip {
-                    source => "[source][address]"
-                    target => "[source]"
+                  output {
+                    elasticsearch {
+                      hosts => [ "${ECK_ES_HOSTS}" ]
+                      user => "${ECK_ES_USER}"
+                      password => "${ECK_ES_PASSWORD}"
+                      ssl_certificate_authorities => "${ECK_ES_SSL_CERTIFICATE_AUTHORITY}"
+                    }
                   }
-                }
-                output {
-                  elasticsearch {
-                    hosts => [ "${ECK_ES_HOSTS}" ]
-                    user => "${ECK_ES_USER}"
-                    password => "${ECK_ES_PASSWORD}"
-                    ssl_certificate_authorities => "${ECK_ES_SSL_CERTIFICATE_AUTHORITY}"
-                  }
-                }
-          services:
-            - name: beats
-              service:
-                spec:
-                  type: ClusterIP
-                  ports:
-                    - port: 5044
-                      name: "filebeat"
-                      protocol: TCP
-                      targetPort: 5044
+            services:
+              - name: beats
+                service:
+                  spec:
+                    type: ClusterIP
+                    ports:
+                      - port: 5044
+                        name: "filebeat"
+                        protocol: TCP
+                        targetPort: 5044
+    - repoURL: {{ .Values.spec.source.repoURL }}
+      targetRevision: {{ .Values.spec.source.targetRevision }}
+      path: config/eck-stack
   destination:
     server: {{ .Values.spec.destination.server }}
     namespace: elastic-stack
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  annotations:
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
-  name: kibana-ingress
-  namespace: elastic-stack
-spec:
-  rules:
-  - host: kibana.schreibubi.de
-    http:
-      paths:
-      - backend:
-          service:
-            name: eck-stack-eck-kibana-kb-http
-            port:
-              number: 5601
-        path: /
-        pathType: ImplementationSpecific
