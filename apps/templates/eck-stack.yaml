@@ -47,13 +47,14 @@ spec:
           eck-kibana:
             annotations:
               eck.k8s.elastic.co/license: basic
-            http:
-              tls:
-                selfSignedCertificate:
-                  disabled: true
-              service:
-                spec:
-                  type: LoadBalancer
+            spec:
+              http:
+                tls:
+                  selfSignedCertificate:
+                    disabled: true
+                service:
+                  spec:
+                    type: LoadBalancer
           eck-logstash:
             annotations:
               eck.k8s.elastic.co/license: basic
