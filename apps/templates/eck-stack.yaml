@@ -23,39 +23,37 @@ spec:
           eck-elasticsearch:
             annotations:
               eck.k8s.elastic.co/license: basic
-            spec:
-              nodeSets:
-              - name: default
-                count: 3
-                config:
-                  node.store.allow_mmap: false
-                volumeClaimTemplates:
-                - metadata:
-                    name: elasticsearch-data
-                  spec:
-                    accessModes:
-                    - ReadWriteOnce
-                    resources:
-                      requests:
-                        storage: 10Gi
-              http:
-                tls:
-                  selfSignedCertificate:
-                    disabled: true
-                service:
-                  spec:
-                    type: LoadBalancer
+            nodeSets:
+            - name: default
+              count: 3
+              config:
+                node.store.allow_mmap: false
+              volumeClaimTemplates:
+              - metadata:
+                  name: elasticsearch-data
+                spec:
+                  accessModes:
+                  - ReadWriteOnce
+                  resources:
+                    requests:
+                      storage: 10Gi
+            http:
+              tls:
+                selfSignedCertificate:
+                  disabled: true
+              service:
+                spec:
+                  type: LoadBalancer
           eck-kibana:
             annotations:
               eck.k8s.elastic.co/license: basic
-            spec:
-              http:
-                tls:
-                  selfSignedCertificate:
-                    disabled: true
-                service:
-                  spec:
-                    type: LoadBalancer
+            http:
+              tls:
+                selfSignedCertificate:
+                  disabled: true
+              service:
+                spec:
+                  type: LoadBalancer
           eck-logstash:
             annotations:
               eck.k8s.elastic.co/license: basic
