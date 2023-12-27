@@ -24,7 +24,7 @@ spec:
             annotations:
               eck.k8s.elastic.co/license: basic
             spec:
-	      http:
+              http:
                 tls:
                   selfSignedCertificate:
                     disabled: true
