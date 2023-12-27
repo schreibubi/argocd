@@ -75,13 +75,13 @@ spec:
                     }
                   }
             services:
-              - name: beats
+              - name: logstash-tcp-input
                 service:
                   spec:
                     type: ClusterIP
                     ports:
                       - port: 5000
-                        name: "logstashInputService"
+                        name: "logstash-input-service"
                         protocol: TCP
                         targetPort: 5000
     - repoURL: {{ .Values.spec.source.repoURL }}
