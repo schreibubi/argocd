@@ -27,6 +27,7 @@ spec:
             - name: default
               count: 3
               config:
+                node.roles: ["master", "data", "ingest", "ml", "transform"]
                 node.store.allow_mmap: false
               volumeClaimTemplates:
               - metadata:
