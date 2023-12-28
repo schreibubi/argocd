@@ -106,11 +106,9 @@ spec:
               type: metricbeat
               version: 8.11.3
               elasticsearchRef:
-                - clusterName: eck
-                  name: elasticsearch
+                name: elasticsearch
               kibanaRef:
-                - clusterName: eck
-                  name: kibana
+                name: eck-stack-eck-kibana
               config:
                 metricbeat:
                   autodiscover:
